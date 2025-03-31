@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
@@ -134,7 +135,9 @@ fun NewListView(navController: NavController) {
         }
 
         location?.let {
-            Text("Selected Location: Lat: ${it.first}, Lng: ${it.second}")
+            val context = LocalContext.current
+            val address = getAddressFromCoordinates(context, location?.first?: 0.0, location?.second ?: 0.0)
+            Text("Selected Location: $address")
         }
     }
 
