@@ -42,9 +42,17 @@ fun TodoMainView(viewModel: TodoViewModel, navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxHeight()
-            .padding(8.dp)
+            .padding(32.dp)
     ) {
         if (todoList.isNotEmpty()) {
+            Text(
+                modifier = Modifier.fillMaxWidth()
+                    .padding(20.dp),
+                textAlign = TextAlign.Center,
+                text = "ToDo Lists",
+                fontSize = 32.sp,
+
+            )
             LazyColumn {
                 itemsIndexed(todoList) { _, item ->
                     TodoItem(item = item, onDelete = { viewModel.delete(item) })
@@ -103,6 +111,16 @@ fun TodoItem(item: Todo, onDelete: () -> Unit) {
                 text = item.name,
                 fontSize = 20.sp,
                 color = Color.White
+            )
+            Text(
+                text = item.description,
+                fontSize = 12.sp,
+                color = Color.White
+            )
+            Text(
+                text = item.address,
+                fontSize = 10.sp,
+                color = Color.LightGray
             )
         }
         IconButton(onClick = onDelete) {

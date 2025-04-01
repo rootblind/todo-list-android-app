@@ -10,5 +10,6 @@ data class Todo(
     val description: String,
     val latitude: Double,
     val longitude: Double,
+    val address: String,
     val timestamp: Long = System.currentTimeMillis()
 )

@@ -49,7 +49,7 @@ class MainActivity : ComponentActivity() {
                 ){
                     NavHost(navController = navController, startDestination = "home") {
                         composable("home") { TodoMainView(todoViewModel, navController)}
-                        composable("new_list") {NewListView(navController)}
+                        composable("new_list") {NewListView(navController, todoViewModel)}
                         composable("open_map"){
                             MapScreen(navController, onLocationSelected = {
                                 location ->
@@ -57,6 +57,15 @@ class MainActivity : ComponentActivity() {
                                 navController.popBackStack()
                             })
 
+                        }
+                        composable("todo_page/{id}") {
+                            backStackEntry ->
+                            val todoId = backStackEntry.arguments?.getString("id")?.toIntOrNull()
+                            if (todoId != null) {
+                                TodoListView(navController, todoViewModel, id = todoId)
+                            } else {
+                                Text("Todo not found!")
+                            }
                         }
                     }
                 }

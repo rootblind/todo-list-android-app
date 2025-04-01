@@ -13,13 +13,18 @@ abstract class TodoDatabase : RoomDatabase() {
         @Volatile
         private var INSTANCE: TodoDatabase? = null
 
+        fun destroyerDatabase(context: Context) {
+            context.deleteDatabase("todo_database")
+        }
+
         fun getDatabase(context: Context): TodoDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     TodoDatabase::class.java,
                     "todo_database"
-                ).build()
+                )
+                .build()
                 INSTANCE = instance
                 instance
             }

@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.StateFlow
 @Dao
 interface TodoDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(todo: Todo)
+    suspend fun insert(todo: Todo): Long
 
     @Update
     fun update(todo: Todo)
@@ -18,4 +18,10 @@ interface TodoDAO {
 
     @Query("SELECT * FROM todo_table ORDER BY id DESC")
     fun getAllTodos(): Flow<List<Todo>>
+
+    @Query("SELECT * FROM todo_table WHERE id = :id")
+    suspend fun getTodoById(id: Int): Todo?
+
+    @Query("SELECT * FROM todo_table ORDER BY id DESC LIMIT 1")
+    suspend fun getLatestTodo(): Todo?
 }
