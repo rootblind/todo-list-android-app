@@ -1,6 +1,7 @@
 package com.example.todolist
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -55,7 +56,11 @@ fun TodoMainView(viewModel: TodoViewModel, navController: NavController) {
             )
             LazyColumn {
                 itemsIndexed(todoList) { _, item ->
-                    TodoItem(item = item, onDelete = { viewModel.delete(item) })
+                    TodoItem(
+                        item = item,
+                        onDelete = { viewModel.delete(item) },
+                        onClick = { navController.navigate("todo_page/${item.id}") }
+                        )
                 }
             }
         } else {
@@ -91,13 +96,14 @@ fun TodoMainView(viewModel: TodoViewModel, navController: NavController) {
 }
 
 @Composable
-fun TodoItem(item: Todo, onDelete: () -> Unit) {
+fun TodoItem(item: Todo, onDelete: () -> Unit, onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
             .clip(RoundedCornerShape(16.dp))
             .background(MaterialTheme.colorScheme.primary)
+            .clickable { onClick() }
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {

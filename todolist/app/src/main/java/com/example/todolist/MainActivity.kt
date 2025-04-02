@@ -67,6 +67,13 @@ class MainActivity : ComponentActivity() {
                                 Text("Todo not found!")
                             }
                         }
+                        composable("edit_list/{id}") {
+                            backStackEntry ->
+                            val todoId = backStackEntry.arguments?.getString("id")?.toIntOrNull()
+                            if(todoId != null) {
+                                TodoListEditView(navController, todoViewModel, todoId)
+                            }
+                        }
                     }
                 }
             }
