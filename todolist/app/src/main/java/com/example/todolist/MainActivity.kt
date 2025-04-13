@@ -24,6 +24,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.viewmodel.compose.viewModel
 import org.osmdroid.config.Configuration
 
 
@@ -40,6 +41,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         val todoViewModel = ViewModelProvider(this)[TodoViewModel::class.java]
+        val taskViewModel = ViewModelProvider(this)[TaskViewModel::class.java]
         setContent{
             val navController = rememberNavController()
             ToDoListTheme {
@@ -62,7 +64,7 @@ class MainActivity : ComponentActivity() {
                             backStackEntry ->
                             val todoId = backStackEntry.arguments?.getString("id")?.toIntOrNull()
                             if (todoId != null) {
-                                TodoListView(navController, todoViewModel, id = todoId)
+                                TodoListView(navController, todoViewModel, taskViewModel, id = todoId)
                             } else {
                                 Text("Todo not found!")
                             }

@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -28,7 +29,14 @@ class TaskViewModel: ViewModel() {
         }
     }
 
-    suspend fun insert(todoId: Long,
+    fun getTasksFromTodo(todoId: Int): Flow<List<Task>> {
+        return _taskList.map {
+            tasks ->
+            tasks.filter {it.todoId == todoId}
+        }
+    }
+
+    suspend fun insert(todoId: Int,
                        name : String,
                        description: String,
                        deadlineTimestamp: Long)

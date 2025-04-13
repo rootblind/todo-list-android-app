@@ -12,7 +12,7 @@ import java.time.ZoneId
 @Entity(tableName = "task_table")
 data class Task(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    val todoId: Long,
+    val todoId: Int,
     val name: String,
     val description: String,
     val deadlineTimestamp: Long
