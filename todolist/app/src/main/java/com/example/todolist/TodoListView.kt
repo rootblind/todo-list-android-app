@@ -1,6 +1,7 @@
 package com.example.todolist
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -110,7 +111,8 @@ fun TodoListView(navController: NavController, viewModel: TodoViewModel, taskVie
                         TaskItem(
                             item = item,
                             onDelete = { taskViewModel.delete(item) },
-                            onClick = { /*navController.navigate("task_page/${item.id}")*/ }
+                            onClick = { navController.navigate("task_page/${item.id}") },
+                            onEdit = { navController.navigate("edit_task/${item.id}") }
                         )
                     }
                 }
@@ -134,9 +136,9 @@ fun TodoListView(navController: NavController, viewModel: TodoViewModel, taskVie
         Row(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(bottom = 16.dp), // Optional: Add padding from bottom
+                .padding(bottom = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(16.dp) // Space between buttons
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
 
             FloatingActionButton(
@@ -153,7 +155,7 @@ fun TodoListView(navController: NavController, viewModel: TodoViewModel, taskVie
             }
             FloatingActionButton(
                 onClick = {
-                    navController.navigate("new_task")
+                    navController.navigate("new_task/${todo?.id}")
                 },
                 containerColor = Color.Green,
             ) {
@@ -169,6 +171,60 @@ fun TodoListView(navController: NavController, viewModel: TodoViewModel, taskVie
 }
 
 @Composable
-fun TaskItem(item: Task, onClick: () -> Unit, onDelete: () -> Unit) {
-    // TODO
+fun TaskItem(
+    item: Task,
+    onClick: () -> Unit,
+    onDelete: () -> Unit,
+    onEdit: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(12.dp)
+            .clip(RoundedCornerShape(10.dp))
+            .background(Color(0xFFECECEC))
+            .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        // Task info
+        Column(modifier = Modifier.weight(1f)) {
+            Text(text = item.name, style = MaterialTheme.typography.titleMedium)
+            Text(
+                text = item.description,
+                style = MaterialTheme.typography.bodySmall,
+                color = Color.Gray
+            )
+            Text(
+                text = "Deadline: ${
+                    SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.ENGLISH).format(item.deadlineTimestamp)
+                }",
+                style = MaterialTheme.typography.labelSmall
+            )
+        }
+
+        Icon(
+            imageVector = Icons.Default.Edit,
+            contentDescription = "Edit Task",
+            modifier = Modifier
+                .padding(start = 8.dp)
+                .clip(RoundedCornerShape(8.dp))
+                .background(Color(0xFF2196F3))
+                .padding(8.dp)
+                .clickable { onEdit() },
+            tint = Color.White
+        )
+
+        Icon(
+            painter = androidx.compose.ui.res.painterResource(id = R.drawable.baseline_delete_forever_24),
+            contentDescription = "Delete Task",
+            modifier = Modifier
+                .padding(start = 8.dp)
+                .clip(RoundedCornerShape(8.dp))
+                .background(Color(0xFFF44336)) // Red
+                .padding(8.dp)
+                .clickable { onDelete() },
+            tint = Color.White
+        )
+    }
 }
+

@@ -1,30 +1,20 @@
 package com.example.todolist
 
-import android.content.Context
 import android.os.Bundle
 import android.preference.PreferenceManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.todolist.ui.theme.ToDoListTheme
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.NavHost
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.viewmodel.compose.viewModel
 import org.osmdroid.config.Configuration
 
 
@@ -42,40 +32,59 @@ class MainActivity : ComponentActivity() {
 
         val todoViewModel = ViewModelProvider(this)[TodoViewModel::class.java]
         val taskViewModel = ViewModelProvider(this)[TaskViewModel::class.java]
-        setContent{
+        setContent {
             val navController = rememberNavController()
             ToDoListTheme {
-                Surface (
+                Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
-                ){
+                ) {
                     NavHost(navController = navController, startDestination = "home") {
-                        composable("home") { TodoMainView(todoViewModel, navController)}
-                        composable("new_list") {NewListView(navController, todoViewModel)}
-                        composable("open_map"){
-                            MapScreen(navController, onLocationSelected = {
-                                location ->
-                                navController.previousBackStackEntry?.savedStateHandle?.set("selectedLocation", location)
+                        composable("home") { TodoMainView(todoViewModel, navController) }
+                        composable("new_list") { NewListView(navController, todoViewModel) }
+                        composable("open_map") {
+                            MapScreen(navController, onLocationSelected = { location ->
+                                navController.previousBackStackEntry?.savedStateHandle?.set(
+                                    "selectedLocation",
+                                    location
+                                )
                                 navController.popBackStack()
                             })
 
                         }
-                        composable("todo_page/{id}") {
-                            backStackEntry ->
+                        composable("todo_page/{id}") { backStackEntry ->
                             val todoId = backStackEntry.arguments?.getString("id")?.toIntOrNull()
                             if (todoId != null) {
-                                TodoListView(navController, todoViewModel, taskViewModel, id = todoId)
+                                TodoListView(
+                                    navController,
+                                    todoViewModel,
+                                    taskViewModel,
+                                    id = todoId
+                                )
                             } else {
                                 Text("Todo not found!")
                             }
                         }
-                        composable("edit_list/{id}") {
-                            backStackEntry ->
+                        composable("edit_list/{id}") { backStackEntry ->
                             val todoId = backStackEntry.arguments?.getString("id")?.toIntOrNull()
-                            if(todoId != null) {
+                            if (todoId != null) {
                                 TodoListEditView(navController, todoViewModel, todoId)
                             }
                         }
+                        composable("new_task/{id}") { backStackEntry ->
+                            val todoId = backStackEntry.arguments?.getString("id")?.toIntOrNull()
+                            if (todoId != null) {
+                                NewTaskView(navController, taskViewModel, todoId = todoId)
+                            }
+                        }
+                        composable("edit_task/{taskId}") { backStackEntry ->
+                            val taskId = backStackEntry.arguments?.getString("taskId")?.toIntOrNull()
+                            taskId?.let {
+                                EditTaskView(navController = navController, viewModel = taskViewModel, taskId = it)
+                            }
+                        }
+
+
                     }
                 }
             }

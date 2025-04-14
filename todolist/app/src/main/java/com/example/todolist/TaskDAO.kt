@@ -21,11 +21,11 @@ interface TaskDAO {
     @Query("SELECT * FROM task_table ORDER BY deadlineTimestamp ASC")
     fun getAllTasks(): Flow<List<Task>>
 
-    @Query("SELECT * FROM task_table WHERE todoId = :id ORDER BY deadlineTimestamp ASC")
-    fun getTasksFromTodo(id: Long): Flow<List<Task>>
+    @Query("SELECT * FROM task_table WHERE todoId = :todoId")
+    fun getTasksFromTodo(todoId: Int): Flow<List<Task>>
 
     @Query("SELECT * FROM task_table WHERE id = :id")
-    suspend fun getTaskById(id: Int): Task?
+    fun getTaskById(id: Int): Flow<Task?>
 
     @Query("SELECT * FROM task_table ORDER BY id DESC LIMIT 1")
     suspend fun getLatestTask(): Task?

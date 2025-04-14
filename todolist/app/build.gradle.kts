@@ -70,5 +70,10 @@ dependencies {
     implementation(libs.androidx.webkit)
     implementation(libs.osmdroid.android)
 
+    implementation(libs.androidx.material)
+    implementation(libs.material3)
+    implementation(libs.androidx.material.icons.extended)
+    implementation(libs.androidx.fragment.ktx)
+
 }
 

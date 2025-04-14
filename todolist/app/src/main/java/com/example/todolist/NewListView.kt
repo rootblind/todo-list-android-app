@@ -67,7 +67,7 @@ fun NewListView(navController: NavController, viewModel: TodoViewModel) {
         val newLocation = savedStateHandle?.get<Pair<Double, Double>>("selectedLocation")
         if (newLocation != null) {
             location = newLocation
-            savedStateHandle.remove<Pair<Double, Double>>("selectedLocation") // Clear after use
+            savedStateHandle.remove<Pair<Double, Double>>("selectedLocation")
         }
     }
 

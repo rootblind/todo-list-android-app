@@ -1,6 +1,5 @@
 package com.example.todolist
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -8,7 +7,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -30,10 +28,7 @@ class TaskViewModel: ViewModel() {
     }
 
     fun getTasksFromTodo(todoId: Int): Flow<List<Task>> {
-        return _taskList.map {
-            tasks ->
-            tasks.filter {it.todoId == todoId}
-        }
+        return taskDao.getTasksFromTodo(todoId)
     }
 
     suspend fun insert(todoId: Int,
@@ -46,13 +41,17 @@ class TaskViewModel: ViewModel() {
             name = name,
             description = description,
             deadlineTimestamp = deadlineTimestamp)
-        taskDao.insert(
-            task
-        )
+        //Log.d("TaskInsert", "Inserting task: $task")
+        val newId = taskDao.insert(task)
+        //Log.d("TaskInsert", "New task ID: $newId")
 
         val newTask = taskDao.getLatestTask()
         newTask?.let { _lastId.value = it.id }
 
+    }
+
+    fun getTaskById(id: Int): Flow<Task?> {
+        return taskDao.getTaskById(id)
     }
 
     fun resetLastId() {
