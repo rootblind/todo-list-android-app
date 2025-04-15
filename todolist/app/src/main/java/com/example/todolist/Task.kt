@@ -15,7 +15,8 @@ data class Task(
     val todoId: Int,
     val name: String,
     val description: String,
-    val deadlineTimestamp: Long
+    val deadlineTimestamp: Long,
+    val notified: Boolean = false
 ) {
     @RequiresApi(Build.VERSION_CODES.O)
     fun getDueDateTime(): LocalDateTime =

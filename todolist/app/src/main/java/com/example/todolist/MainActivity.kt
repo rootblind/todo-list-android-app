@@ -1,6 +1,9 @@
 package com.example.todolist
 
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import android.Manifest
 import android.preference.PreferenceManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -10,12 +13,19 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.work.PeriodicWorkRequestBuilder
 import com.example.todolist.ui.theme.ToDoListTheme
 import org.osmdroid.config.Configuration
+import java.util.concurrent.TimeUnit
+import androidx.work.WorkManager
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.ExistingPeriodicWorkPolicy
 
 
 class MainActivity : ComponentActivity() {
@@ -27,7 +37,22 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this))
-        todoDatabase = TodoDatabase.getDatabase(applicationContext)
+        todoDatabase = TodoDatabase.getDatabase(this)
+
+        requestNotificationPermission()
+        createNotificationChannel(applicationContext)
+
+        // schedule a worker to check deadlines
+
+        val request = PeriodicWorkRequestBuilder<DeadlineCheckWorker>(1, TimeUnit.MINUTES)
+            .build()
+
+        WorkManager.getInstance(applicationContext).enqueueUniquePeriodicWork(
+            "CheckTaskDeadlines",
+            ExistingPeriodicWorkPolicy.KEEP,
+            request
+        )
+
         enableEdgeToEdge()
 
         val todoViewModel = ViewModelProvider(this)[TodoViewModel::class.java]
@@ -87,6 +112,22 @@ class MainActivity : ComponentActivity() {
 
                     }
                 }
+            }
+        }
+    }
+
+    private fun requestNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                    1001
+                )
             }
         }
     }

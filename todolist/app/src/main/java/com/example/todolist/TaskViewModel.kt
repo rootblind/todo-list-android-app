@@ -31,6 +31,16 @@ class TaskViewModel: ViewModel() {
         return taskDao.getTasksFromTodo(todoId)
     }
 
+    fun getDueUnnotifiedTasks(now: Long): Flow<List<Task>> {
+        return taskDao.getDueUnnotifiedTasks(now)
+    }
+
+    fun markTaskAsNotified(taskId: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            taskDao.markTaskAsNotified(taskId)
+        }
+    }
+
     suspend fun insert(todoId: Int,
                        name : String,
                        description: String,

@@ -18,6 +18,12 @@ interface TaskDAO {
     @Delete
     suspend fun delete(task: Task)
 
+    @Query("SELECT * FROM task_table WHERE deadlineTimestamp <= :now AND notified = 0")
+    fun getDueUnnotifiedTasks(now: Long): Flow<List<Task>>
+
+    @Query("UPDATE task_table SET notified = 1 WHERE id = :taskId")
+    suspend fun markTaskAsNotified(taskId: Int)
+
     @Query("SELECT * FROM task_table ORDER BY deadlineTimestamp ASC")
     fun getAllTasks(): Flow<List<Task>>
 
