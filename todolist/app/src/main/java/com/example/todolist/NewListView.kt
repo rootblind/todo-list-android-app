@@ -27,6 +27,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -38,14 +40,12 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun NewListView(navController: NavController, viewModel: TodoViewModel) {
-    var inputName by rememberSaveable {
-        mutableStateOf("")
-    }
-    var inputDesc by rememberSaveable {
-        mutableStateOf("")
-    }
+    var inputName by rememberSaveable { mutableStateOf("") }
+    var inputDesc by rememberSaveable { mutableStateOf("") }
 
     var ctx = LocalContext.current
+
+    val colorScheme = MaterialTheme.colorScheme
 
     val savedStateHandle = navController.currentBackStackEntry?.savedStateHandle
     var location by remember { mutableStateOf<Pair<Double, Double>?>(null) }
@@ -83,7 +83,7 @@ fun NewListView(navController: NavController, viewModel: TodoViewModel) {
                 .padding(8.dp),
             horizontalArrangement = Arrangement.Center
         ){
-            Text("New list", style = MaterialTheme.typography.titleLarge)
+            Text("New list", style = typography.titleLarge, color = colorScheme.onBackground)
         }
 
         Row(
@@ -94,15 +94,16 @@ fun NewListView(navController: NavController, viewModel: TodoViewModel) {
             Text(
                 text = "Name",
                 modifier = Modifier.align(Alignment.CenterVertically)
-                    .width(60.dp)
+                    .width(60.dp),
+                color = colorScheme.onBackground
                 )
             OutlinedTextField(
-                modifier = Modifier.weight(1f)
-                    .weight(1f),
+                modifier = Modifier.weight(1f),
                 value = inputName,
                 onValueChange = {
                     inputName = it
-                }
+                },
+                singleLine = true
             )
         }
         Row(
@@ -113,15 +114,16 @@ fun NewListView(navController: NavController, viewModel: TodoViewModel) {
             Text(
                 text = "Description",
                 modifier = Modifier.align(Alignment.CenterVertically)
-                    .width(95.dp)
+                    .width(95.dp),
+                color = colorScheme.onBackground
             )
             OutlinedTextField(
-                modifier = Modifier.weight(1f)
-                    .weight(1f),
+                modifier = Modifier.weight(1f),
                 value = inputDesc,
                 onValueChange = {
                     inputDesc = it
-                }
+                },
+                singleLine = true
             )
         }
 
@@ -133,19 +135,20 @@ fun NewListView(navController: NavController, viewModel: TodoViewModel) {
             Text(
                 text = "Location",
                 modifier = Modifier.align(Alignment.CenterVertically)
-                    .width(95.dp)
+                    .width(95.dp),
+                color = colorScheme.onBackground
             )
 
             Button(
                 onClick = {
                     navController.navigate("open_map")
                 },
-                colors = ButtonDefaults.buttonColors(containerColor = Color.Magenta)
+                colors = ButtonDefaults.buttonColors(colorScheme.primary)   //containerColor = Color.Magenta)
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.baseline_add_location_24),
                     contentDescription = "Location",
-                    tint = Color.White
+                    tint = colorScheme.onPrimary  //Color.White
                 )
             }
         }
@@ -154,7 +157,7 @@ fun NewListView(navController: NavController, viewModel: TodoViewModel) {
             val context = LocalContext.current
             val address = getAddressFromCoordinates(context, location?.first?: 0.0, location?.second ?: 0.0)
             addressName = address
-            Text("Selected Location: $address")
+            Text("Selected Location: $address", color = colorScheme.onBackground)
         }
     }
 
@@ -180,13 +183,13 @@ fun NewListView(navController: NavController, viewModel: TodoViewModel) {
 
                 }
             },
-            containerColor = Color.Blue,
+            containerColor = colorScheme.secondary,
+            contentColor = colorScheme.onSecondary,
             modifier = Modifier.align(Alignment.BottomEnd)
         ) {
             Icon(
                 imageVector = Icons.Default.Check,
-                contentDescription = "Add",
-                tint = Color.White
+                contentDescription = "Add"
             )
         }
     }

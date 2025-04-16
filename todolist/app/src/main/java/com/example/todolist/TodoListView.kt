@@ -40,8 +40,14 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 @Composable
-fun TodoListView(navController: NavController, viewModel: TodoViewModel, taskViewModel: TaskViewModel, id: Int) {
-
+fun TodoListView(
+    navController: NavController,
+    viewModel: TodoViewModel,
+    taskViewModel: TaskViewModel,
+    id: Int
+) {
+    val colorScheme = MaterialTheme.colorScheme
+    val typography = MaterialTheme.typography
     val todo by produceState<Todo?>(initialValue = null) {
         viewModel.viewModelScope.launch {
             value = viewModel.todoDao.getTodoById(id)
@@ -60,8 +66,8 @@ fun TodoListView(navController: NavController, viewModel: TodoViewModel, taskVie
                 verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     modifier = Modifier.align(Alignment.CenterVertically),
-                    fontSize = 32.sp,
-                    color = Color.Black,
+                    style = typography.headlineLarge,
+                    color = colorScheme.onBackground,
                     text = it.name
                 )
             }
@@ -71,27 +77,27 @@ fun TodoListView(navController: NavController, viewModel: TodoViewModel, taskVie
                     .fillMaxWidth()
                     .padding(16.dp)
                     .clip(RoundedCornerShape(16.dp))
-                    .background(MaterialTheme.colorScheme.primary)
+                    .background(colorScheme.primary)
                     .padding(16.dp),
             ) {
                 Column(
                     modifier = Modifier.weight(1f),
                 ) {
                     Text(
-                        fontSize = 20.sp,
-                        color = Color.White,
+                        style = typography.bodyLarge,
+                        color = colorScheme.onPrimary,
                         text = "Description: ${it.description}"
 
                     )
                     Text(
-                        fontSize = 16.sp,
-                        color = Color.LightGray,
-                        text = "Address: ${it.address}"
+                        text = "Address: ${it.address}",
+                        style = typography.bodyMedium,
+                        color = colorScheme.onPrimary.copy(alpha = 0.7f)
                     )
                     Text(
-                        fontSize = 12.sp,
-                        color = Color.LightGray,
-                        text = "Created at ${SimpleDateFormat("HH:mm, dd/MM", Locale.ENGLISH).format(it.timestamp)}"
+                        text = "Created at ${SimpleDateFormat("HH:mm, dd/MM", Locale.ENGLISH).format(it.timestamp)}",
+                        style = typography.labelSmall,
+                        color = colorScheme.onPrimary.copy(alpha = 0.6f)
                     )
                 }
             }
@@ -101,11 +107,11 @@ fun TodoListView(navController: NavController, viewModel: TodoViewModel, taskVie
                 Text(
                     modifier = Modifier.fillMaxWidth()
                         .padding(20.dp),
-                    textAlign = TextAlign.Center,
                     text = "Tasks",
-                    fontSize = 32.sp,
-
-                    )
+                    style = typography.headlineMedium,
+                    color = colorScheme.onBackground,
+                    textAlign = TextAlign.Center
+                )
                 LazyColumn {
                     itemsIndexed(tasks) { _, item ->
                         TaskItem(
@@ -120,14 +126,21 @@ fun TodoListView(navController: NavController, viewModel: TodoViewModel, taskVie
                 Text(
                     modifier = Modifier.fillMaxWidth()
                         .padding(20.dp),
-                    textAlign = TextAlign.Center,
                     text = "No tasks in this list",
-                    fontSize = 32.sp
+                    style = typography.headlineMedium,
+                    color = colorScheme.onBackground,
+                    textAlign = TextAlign.Center
                 )
             }
         }
 
-    } ?: Text("Loading....")
+    } ?: Text(
+        text = "Loading...",
+        style = MaterialTheme.typography.bodyLarge,
+        color = MaterialTheme.colorScheme.onBackground,
+        modifier = Modifier.padding(16.dp)
+
+    )
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -145,24 +158,24 @@ fun TodoListView(navController: NavController, viewModel: TodoViewModel, taskVie
                 onClick = {
                     navController.navigate("edit_list/${todo?.id}")
                 },
-                containerColor = Color.Blue,
+                containerColor = colorScheme.secondary,
+                contentColor = colorScheme.onSecondary
             ) {
                 Icon(
                     imageVector = Icons.Default.Edit,
                     contentDescription = "Edit",
-                    tint = Color.White
                 )
             }
             FloatingActionButton(
                 onClick = {
                     navController.navigate("new_task/${todo?.id}")
                 },
-                containerColor = Color.Green,
+                containerColor = colorScheme.primary,
+                contentColor = colorScheme.onPrimary
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
                     contentDescription = "Add",
-                    tint = Color.White
                 )
             }
         }
@@ -177,28 +190,34 @@ fun TaskItem(
     onDelete: () -> Unit,
     onEdit: () -> Unit
 ) {
+
+    val colorScheme = MaterialTheme.colorScheme
+    val typography = MaterialTheme.typography
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(12.dp)
             .clip(RoundedCornerShape(10.dp))
-            .background(Color(0xFFECECEC))
+            .background(colorScheme.surfaceVariant)
+            //.clickable { onEdit() }
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         // Task info
         Column(modifier = Modifier.weight(1f)) {
-            Text(text = item.name, style = MaterialTheme.typography.titleMedium)
+            Text(text = item.name, style = typography.titleMedium)
             Text(
                 text = item.description,
-                style = MaterialTheme.typography.bodySmall,
-                color = Color.Gray
+                style = typography.bodySmall,
+                color = colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
             )
             Text(
                 text = "Deadline: ${
                     SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.ENGLISH).format(item.deadlineTimestamp)
                 }",
-                style = MaterialTheme.typography.labelSmall
+                style = typography.labelSmall,
+                color = colorScheme.onSurfaceVariant
             )
         }
 
@@ -208,10 +227,10 @@ fun TaskItem(
             modifier = Modifier
                 .padding(start = 8.dp)
                 .clip(RoundedCornerShape(8.dp))
-                .background(Color(0xFF2196F3))
+                .background(colorScheme.secondary)
                 .padding(8.dp)
                 .clickable { onEdit() },
-            tint = Color.White
+            tint = colorScheme.onSecondary
         )
 
         Icon(
@@ -220,10 +239,10 @@ fun TaskItem(
             modifier = Modifier
                 .padding(start = 8.dp)
                 .clip(RoundedCornerShape(8.dp))
-                .background(Color(0xFFF44336)) // Red
+                .background(colorScheme.error)
                 .padding(8.dp)
                 .clickable { onDelete() },
-            tint = Color.White
+            tint = colorScheme.onError
         )
     }
 }

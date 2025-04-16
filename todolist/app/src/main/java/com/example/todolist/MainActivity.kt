@@ -38,13 +38,13 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this))
         todoDatabase = TodoDatabase.getDatabase(this)
-
+        //TodoDatabase.destroyerDatabase(applicationContext)
         requestNotificationPermission()
         createNotificationChannel(applicationContext)
 
         // schedule a worker to check deadlines
 
-        val request = PeriodicWorkRequestBuilder<DeadlineCheckWorker>(1, TimeUnit.MINUTES)
+        val request = PeriodicWorkRequestBuilder<DeadlineCheckWorker>(10, TimeUnit.SECONDS)
             .build()
 
         WorkManager.getInstance(applicationContext).enqueueUniquePeriodicWork(
