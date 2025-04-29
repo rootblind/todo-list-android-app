@@ -1,10 +1,8 @@
 package com.example.todolist
 
 import android.content.Context
-import androidx.lifecycle.ViewModel
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import kotlinx.coroutines.flow.forEach
 
 class DeadlineCheckWorker(
     context: Context,

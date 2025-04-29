@@ -24,7 +24,6 @@ import com.example.todolist.ui.theme.ToDoListTheme
 import org.osmdroid.config.Configuration
 import java.util.concurrent.TimeUnit
 import androidx.work.WorkManager
-import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.ExistingPeriodicWorkPolicy
 
 
@@ -44,12 +43,12 @@ class MainActivity : ComponentActivity() {
 
         // schedule a worker to check deadlines
 
-        val request = PeriodicWorkRequestBuilder<DeadlineCheckWorker>(10, TimeUnit.SECONDS)
+        val request = PeriodicWorkRequestBuilder<DeadlineCheckWorker>(15, TimeUnit.MINUTES)
             .build()
 
         WorkManager.getInstance(applicationContext).enqueueUniquePeriodicWork(
             "CheckTaskDeadlines",
-            ExistingPeriodicWorkPolicy.KEEP,
+            ExistingPeriodicWorkPolicy.UPDATE,
             request
         )
 

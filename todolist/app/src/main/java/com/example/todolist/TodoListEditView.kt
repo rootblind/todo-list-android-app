@@ -16,6 +16,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -80,7 +81,7 @@ fun TodoListEditView(navController: NavController, viewModel: TodoViewModel, id:
                     .padding(8.dp),
                 horizontalArrangement = Arrangement.Center
             ){
-                Text("New list", style = MaterialTheme.typography.titleLarge)
+                Text("Edit list", style = MaterialTheme.typography.titleLarge)
             }
 
             Row(
@@ -137,7 +138,7 @@ fun TodoListEditView(navController: NavController, viewModel: TodoViewModel, id:
                     onClick = {
                         navController.navigate("open_map")
                     },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.Magenta)
+                    colors = ButtonDefaults.buttonColors(colorScheme.primary)
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.baseline_add_location_24),
